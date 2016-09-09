@@ -4,6 +4,7 @@ HYPERKUBE_VERSION = v1.3.6_coreos.0
 
 cloud-config/coreos3-cloud-config.yaml: cloud-config-k8s-master.yaml
 	cat "$<" \
+	| sed -e 's#MYHOSTNAME#coreos3#' \
 	| sed -e 's#MYIPADDRESS#$(MASTER_IP)#' \
 	| sed -e 's#MYETCDENDPOINTS#$(ETCD_ENDPOINTS)#' \
 	| sed -e 's#HYPERKUBE_VERSION#$(HYPERKUBE_VERSION)#' > "$@"
