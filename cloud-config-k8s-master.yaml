@@ -176,7 +176,7 @@ write_files:
         "type": "flannel",
         "delegate": {
           "type": "calico",
-          "etcd_endpoints": "http://0.0.0.0:2379",
+          "etcd_endpoints": "MYETCDENDPOINTS",
           "log_level": "none",
           "log_level_stderr": "info",
           "hostname": "MYIPADDRESS",
@@ -192,8 +192,9 @@ coreos:
     interface: "MYIPADDRESS"
   etcd2:
     name: "MYHOSTNAME"
-    advertise-client-urls: "http://MYHOSTNAME:2379"
-    initial-advertise-peer-urls: "http://MYHOSTNAME:2380"
+    advertise-client-urls: "http://MYIPADDRESS:2379"
+    initial-advertise-peer-urls: "http://MYIPADDRESS:2380"
+    initial-cluster-token: "etcd-cluster-1"
     listen-client-urls: "http://0.0.0.0:2379,http://0.0.0.0:4001"
     listen-peer-urls: "http://0.0.0.0:2380"
   update:

@@ -1,5 +1,9 @@
-ETCD_ENDPOINTS = http://coreos1:2379,http://coreos2:2379,http://coreos3:2379
-MASTER_IP = 192.168.1.175
+COREOS1=192.168.1.196
+COREOS2=192.168.1.182
+COREOS3=192.168.1.175
+
+ETCD_ENDPOINTS = http://$(COREOS1):2379,http://$(COREOS2):2379,http://$(COREOS3):2379
+MASTER_IP = $(COREOS3)
 HYPERKUBE_VERSION = v1.3.6_coreos.0
 
 cloud-config/coreos3-cloud-config.yaml: cloud-config-k8s-master.yaml
@@ -20,7 +24,7 @@ cloud-config/coreos0-cloud-config.yaml: cloud-config-k8s-worker.yaml
 cloud-config/coreos1-cloud-config.yaml: cloud-config-k8s-worker.yaml
 	cat "$<" \
 	| sed -e 's#MYHOSTNAME#coreos1#' \
-	| sed -e 's#MYIPADDRESS#192.168.1.196#' \
+	| sed -e 's#MYIPADDRESS#$(COREOS1)#' \
 	| sed -e 's#MYETCDENDPOINTS#$(ETCD_ENDPOINTS)#' \
 	| sed -e 's#HYPERKUBE_VERSION#$(HYPERKUBE_VERSION)#' \
 	| sed -e 's#MASTER_IP#$(MASTER_IP)#' > "$@"
@@ -28,7 +32,7 @@ cloud-config/coreos1-cloud-config.yaml: cloud-config-k8s-worker.yaml
 cloud-config/coreos2-cloud-config.yaml: cloud-config-k8s-worker.yaml
 	cat "$<" \
 	| sed -e 's#MYHOSTNAME#coreos2#' \
-	| sed -e 's#MYIPADDRESS#192.168.1.182#' \
+	| sed -e 's#MYIPADDRESS#$(COREOS2)#' \
 	| sed -e 's#MYETCDENDPOINTS#$(ETCD_ENDPOINTS)#' \
 	| sed -e 's#HYPERKUBE_VERSION#$(HYPERKUBE_VERSION)#' \
 	| sed -e 's#MASTER_IP#$(MASTER_IP)#' > "$@"
@@ -58,18 +62,18 @@ k8s-keys/coreos0-worker.pem: k8s-keys/coreos0-worker.csr k8s-keys/ca.pem \
 	WORKER_FQDN=coreos0 WORKER_IP=192.168.1.100 openssl x509 -req -in k8s-keys/coreos0-worker.csr -CA k8s-keys/ca.pem -CAkey k8s-keys/ca-key.pem -CAcreateserial -out "$@" -days 365 -extensions v3_req -extfile worker-openssl.cnf
 
 k8s-keys/coreos1-worker.csr: k8s-keys/coreos1-worker-key.pem worker-openssl.cnf
-	WORKER_FQDN=coreos1 WORKER_IP=192.168.1.196 openssl req -new -key k8s-keys/coreos1-worker-key.pem -out "$@" -subj "/CN=coreos1" -config worker-openssl.cnf
+	WORKER_FQDN=coreos1 WORKER_IP=$(COREOS1) openssl req -new -key k8s-keys/coreos1-worker-key.pem -out "$@" -subj "/CN=coreos1" -config worker-openssl.cnf
 
 k8s-keys/coreos1-worker.pem: k8s-keys/coreos1-worker.csr k8s-keys/ca.pem \
                              k8s-keys/ca-key.pem worker-openssl.cnf
-	WORKER_FQDN=coreos1 WORKER_IP=192.168.1.196 openssl x509 -req -in k8s-keys/coreos1-worker.csr -CA k8s-keys/ca.pem -CAkey k8s-keys/ca-key.pem -CAcreateserial -out "$@" -days 365 -extensions v3_req -extfile worker-openssl.cnf
+	WORKER_FQDN=coreos1 WORKER_IP=$(COREOS1) openssl x509 -req -in k8s-keys/coreos1-worker.csr -CA k8s-keys/ca.pem -CAkey k8s-keys/ca-key.pem -CAcreateserial -out "$@" -days 365 -extensions v3_req -extfile worker-openssl.cnf
 
 k8s-keys/coreos2-worker.csr: k8s-keys/coreos2-worker-key.pem worker-openssl.cnf
-	WORKER_FQDN=coreos2 WORKER_IP=192.168.1.182 openssl req -new -key k8s-keys/coreos2-worker-key.pem -out "$@" -subj "/CN=coreos2" -config worker-openssl.cnf
+	WORKER_FQDN=coreos2 WORKER_IP=$(COREOS2) openssl req -new -key k8s-keys/coreos2-worker-key.pem -out "$@" -subj "/CN=coreos2" -config worker-openssl.cnf
 
 k8s-keys/coreos2-worker.pem: k8s-keys/coreos2-worker.csr k8s-keys/ca.pem \
                              k8s-keys/ca-key.pem worker-openssl.cnf
-	WORKER_FQDN=coreos2 WORKER_IP=192.168.1.182 openssl x509 -req -in k8s-keys/coreos2-worker.csr -CA k8s-keys/ca.pem -CAkey k8s-keys/ca-key.pem -CAcreateserial -out "$@" -days 365 -extensions v3_req -extfile worker-openssl.cnf
+	WORKER_FQDN=coreos2 WORKER_IP=$(COREOS2) openssl x509 -req -in k8s-keys/coreos2-worker.csr -CA k8s-keys/ca.pem -CAkey k8s-keys/ca-key.pem -CAcreateserial -out "$@" -days 365 -extensions v3_req -extfile worker-openssl.cnf
 
 k8s-keys/apiserver.pem: k8s-keys/apiserver.csr k8s-keys/ca.pem \
                         k8s-keys/ca-key.pem openssl.cnf
