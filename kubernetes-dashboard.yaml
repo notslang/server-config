@@ -21,6 +21,7 @@ apiVersion: extensions/v1beta1
 metadata:
   labels:
     app: kubernetes-dashboard
+    version: v1.4.0-beta2
   name: kubernetes-dashboard
   namespace: kube-system
 spec:
@@ -38,7 +39,7 @@ spec:
         image: gcr.io/google_containers/kubernetes-dashboard-amd64:v1.4.0-beta2
         imagePullPolicy: Always
         ports:
-        - containerPort: 8080
+        - containerPort: 9090
           protocol: TCP
         args:
           # Uncomment the following line to manually specify Kubernetes API server Host
@@ -48,7 +49,7 @@ spec:
         livenessProbe:
           httpGet:
             path: /
-            port: 8080
+            port: 9090
           initialDelaySeconds: 30
           timeoutSeconds: 30
 ---
@@ -63,6 +64,6 @@ spec:
   type: NodePort
   ports:
   - port: 80
-    targetPort: 8080
+    targetPort: 9090
   selector:
     app: kubernetes-dashboard
