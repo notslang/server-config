@@ -72,7 +72,7 @@ write_files:
           "etcd_endpoints": "http://0.0.0.0:2379",
           "log_level": "none",
           "log_level_stderr": "info",
-          "hostname": "MYHOSTNAME",
+          "hostname": "MYIPADDRESS",
           "policy": {
             "type": "k8s",
             "k8s_api_root": "https://MASTER_IP:443/api/v1/",
