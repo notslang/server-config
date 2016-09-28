@@ -2,6 +2,44 @@
 
 hostname: "MYHOSTNAME"
 write_files:
+  - path: /etc/udev/rules.d/50-rbd.rules
+    content: |
+      KERNEL=="rbd[0-9]*", ENV{DEVTYPE}=="disk", PROGRAM="/opt/bin/ceph-rbdnamer %k", SYMLINK+="rbd/%c{1}/%c{2}"
+      KERNEL=="rbd[0-9]*", ENV{DEVTYPE}=="partition", PROGRAM="/opt/bin/ceph-rbdnamer %k", SYMLINK+="rbd/%c{1}/%c{2}-part%n"
+  - path: /opt/bin/ceph
+    permissions: "0755"
+    content: |
+      #!/bin/sh
+      /usr/bin/docker run --rm -v /etc/ceph:/etc/ceph ceph/base ceph "$@"
+  - path: /opt/bin/ceph-disk
+    permissions: "0755"
+    content: |
+      #!/bin/sh
+      /usr/bin/docker run --rm --privileged=true -v /etc/ceph:/etc/ceph -v /dev:/dev ceph/base ceph-disk "$@"
+  - path: /opt/bin/ceph-rbdnamer
+    permissions: "0755"
+    content: |
+      #!/bin/sh
+      DEV=$1
+      NUM=`echo $DEV | sed 's#p.*##g' | tr -d 'a-z'`
+      POOL=`cat /sys/devices/rbd/$NUM/pool`
+      IMAGE=`cat /sys/devices/rbd/$NUM/name`
+      SNAP=`cat /sys/devices/rbd/$NUM/current_snap`
+      if [ "$SNAP" = "-" ]; then
+              echo -n "$POOL $IMAGE"
+      else
+              echo -n "$POOL $IMAGE@$SNAP"
+      fi
+  - path: /opt/bin/rados
+    permissions: "0755"
+    content: |
+      #!/bin/sh
+      /usr/bin/docker run --rm -v /etc/ceph:/etc/ceph ceph/base rados "$@"
+  - path: /opt/bin/rbd
+    permissions: "0755"
+    content: |
+      #!/bin/sh
+      /usr/bin/docker run --rm -v /etc/ceph:/etc/ceph -v /sys:/sys --net=host --privileged=true ceph/base rbd "$@"
   - path: /etc/kubernetes/manifests/kube-apiserver.yaml
     content: |
       apiVersion: v1
