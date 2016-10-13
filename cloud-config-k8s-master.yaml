@@ -2,6 +2,31 @@
 
 hostname: "MYHOSTNAME"
 write_files:
+  - path: /etc/modprobe.d/bonding.conf
+    content: |
+      # Prevent kernel from automatically creating bond0 when the module is loaded.
+      # This allows systemd-networkd to create and apply options to bond0.
+      options bonding max_bonds=0
+  - path: /etc/systemd/network/10-e.network
+    permissions: 0644
+    owner: root
+    content: |
+      [Match]
+      Name=e*
+
+      [Network]
+      Bond=bond0
+  - path: /etc/systemd/network/20-bond.netdev
+    permissions: 0644
+    owner: root
+    content: |
+      [NetDev]
+      Name=bond0
+      Kind=bond
+
+      [Bond]
+      Mode=0 # defaults to balance-rr
+      MIIMonitorSec=100
   - path: /etc/udev/rules.d/50-rbd.rules
     content: |
       KERNEL=="rbd[0-9]*", ENV{DEVTYPE}=="disk", PROGRAM="/opt/bin/ceph-rbdnamer %k", SYMLINK+="rbd/%c{1}/%c{2}"
