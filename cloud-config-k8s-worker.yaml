@@ -51,9 +51,9 @@ write_files:
       IMAGE=`cat /sys/devices/rbd/$NUM/name`
       SNAP=`cat /sys/devices/rbd/$NUM/current_snap`
       if [ "$SNAP" = "-" ]; then
-              echo -n "$POOL $IMAGE"
+          echo -n "$POOL $IMAGE"
       else
-              echo -n "$POOL $IMAGE@$SNAP"
+          echo -n "$POOL $IMAGE@$SNAP"
       fi
   - path: /opt/bin/rados
     permissions: "0755"
