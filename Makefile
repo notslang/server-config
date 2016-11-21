@@ -3,7 +3,8 @@ COREOS1=192.168.1.196
 COREOS2=192.168.1.182
 COREOS3=192.168.1.175
 
-ETCD_ENDPOINTS = http://$(COREOS0):2379,http://$(COREOS1):2379,http://$(COREOS2):2379,http://$(COREOS3):2379
+INITAL_CLUSTER = coreos0=http://$(COREOS0):2380,coreos1=http://$(COREOS1):2380,coreos2=http://$(COREOS2):2380,coreos3=http://$(COREOS3):2380,coreos4=http://$(COREOS4):2380
+ETCD_ENDPOINTS = http://$(COREOS0):2379,http://$(COREOS1):2379,http://$(COREOS2):2379,http://$(COREOS3):2379,http://$(COREOS4):2379
 MASTER_IP = $(COREOS3)
 HYPERKUBE_VERSION = v1.3.6_coreos.0
 
@@ -12,6 +13,7 @@ cloud-config/coreos3-cloud-config.yaml: cloud-config-k8s-master.yaml
 	| sed -e 's#MYHOSTNAME#coreos3#' \
 	| sed -e 's#MYIPADDRESS#$(MASTER_IP)#' \
 	| sed -e 's#MYETCDENDPOINTS#$(ETCD_ENDPOINTS)#' \
+	| sed -e 's#MYINITALCLUSTER#$(INITAL_CLUSTER)#' \
 	| sed -e 's#HYPERKUBE_VERSION#$(HYPERKUBE_VERSION)#' > "$@"
 
 cloud-config/coreos0-cloud-config.yaml: cloud-config-k8s-worker.yaml
@@ -19,6 +21,7 @@ cloud-config/coreos0-cloud-config.yaml: cloud-config-k8s-worker.yaml
 	| sed -e 's#MYHOSTNAME#coreos0#' \
 	| sed -e 's#MYIPADDRESS#$(COREOS0)#' \
 	| sed -e 's#MYETCDENDPOINTS#$(ETCD_ENDPOINTS)#' \
+	| sed -e 's#MYINITALCLUSTER#$(INITAL_CLUSTER)#' \
 	| sed -e 's#HYPERKUBE_VERSION#$(HYPERKUBE_VERSION)#' \
 	| sed -e 's#MASTER_IP#$(MASTER_IP)#' > "$@"
 
@@ -27,6 +30,7 @@ cloud-config/coreos1-cloud-config.yaml: cloud-config-k8s-worker.yaml
 	| sed -e 's#MYHOSTNAME#coreos1#' \
 	| sed -e 's#MYIPADDRESS#$(COREOS1)#' \
 	| sed -e 's#MYETCDENDPOINTS#$(ETCD_ENDPOINTS)#' \
+	| sed -e 's#MYINITALCLUSTER#$(INITAL_CLUSTER)#' \
 	| sed -e 's#HYPERKUBE_VERSION#$(HYPERKUBE_VERSION)#' \
 	| sed -e 's#MASTER_IP#$(MASTER_IP)#' > "$@"
 
@@ -35,6 +39,7 @@ cloud-config/coreos2-cloud-config.yaml: cloud-config-k8s-worker.yaml
 	| sed -e 's#MYHOSTNAME#coreos2#' \
 	| sed -e 's#MYIPADDRESS#$(COREOS2)#' \
 	| sed -e 's#MYETCDENDPOINTS#$(ETCD_ENDPOINTS)#' \
+	| sed -e 's#MYINITALCLUSTER#$(INITAL_CLUSTER)#' \
 	| sed -e 's#HYPERKUBE_VERSION#$(HYPERKUBE_VERSION)#' \
 	| sed -e 's#MASTER_IP#$(MASTER_IP)#' > "$@"
 
