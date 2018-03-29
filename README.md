@@ -19,3 +19,10 @@ Servers are started & configured via PXE boot using CoreOS's Matchbox & Ignition
 docker run --name matchbox -d -p 8080:8080 -v $(pwd)/matchbox:/var/lib/matchbox quay.io/coreos/matchbox:latest -address=0.0.0.0:8080 -log-level=debug
 docker run --name dnsmasq -d --net=host --cap-add=NET_ADMIN -v $(pwd)/matchbox-dnsmasq.conf:/etc/dnsmasq.conf:Z quay.io/coreos/dnsmasq:v0.5.0 -d
 ```
+
+Each server has at least one disk and 2 partitions.
+
+partition  | type  | why?
+---------- | ----- | --------------------------------------------------------------
+/data      | btrfs | data that needs to stay around & can be made of multiple disks
+/ephemeral | ext4  | data that's destroyed on reboot, including a swap file
