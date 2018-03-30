@@ -26,3 +26,17 @@ partition  | type  | why?
 ---------- | ----- | --------------------------------------------------------------
 /data      | btrfs | data that needs to stay around & can be made of multiple disks
 /ephemeral | ext4  | data that's destroyed on reboot, including a swap file
+
+Creating these partitions isn't automated yet, so I use parted & manual disk labeling:
+
+```bash
+sudo parted /dev/sda
+(parted) mklabel gpt
+(parted) mkpart primary ext4 0% 50%
+(parted) mkpart primary btrfs 50% 100%
+(parted) name 1 EPHEMERAL
+(parted) name 2 DATA
+sudo mkfs.ext4 /dev/sda1
+sudo mkfs.btrfs -f /dev/sda2
+sudo btrfs fi label /dev/sda2 DATA
+```
