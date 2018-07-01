@@ -1,3 +1,5 @@
+COFFEE = ./node_modules/.bin/coffee
+
 .PRECIOUS: ssh-host-keys/%/ssh_host_rsa_key
 ssh-host-keys/%/ssh_host_rsa_key:
 	mkdir -p "$(dir $@)"
@@ -32,22 +34,23 @@ tinc-keys/%.priv:
 .PRECIOUS: matchbox/groups/%.json
 matchbox/groups/%.json: $(wildcard ./generate-config/*)
 	mkdir -p "$(dir $@)"
-	./node_modules/.bin/coffee ./generate-config/ignition-group.coffee $* > $@
+	$(COFFEE) ./generate-config/ignition-group.coffee $* > $@
 
 .PRECIOUS: matchbox/profiles/%.json
 matchbox/profiles/%.json: $(wildcard ./generate-config/*)
 	mkdir -p "$(dir $@)"
-	./node_modules/.bin/coffee ./generate-config/ignition-profile.coffee $* > $@
+	$(COFFEE) ./generate-config/ignition-profile.coffee $* > $@
 
 .PRECIOUS: matchbox/ignition/%.json
 matchbox/ignition/%.json: $(wildcard ./generate-config/*) tinc-keys \
                           $(wildcard ./ssh-keys/*) $(wildcard ./ssh-keys/*) \
                           $(wildcard ./bash-profile/*)
 	mkdir -p "$(dir $@)"
-	./node_modules/.bin/coffee ./generate-config/ignition.coffee $* > $@
+	$(COFFEE) ./generate-config/ignition.coffee $* > $@
 
 .PHONY: matchbox-%
-matchbox-%: matchbox/profiles/%.json matchbox/groups/%.json matchbox/ignition/%.json ssh-host-keys/% tinc-keys/%.priv
+matchbox-%: matchbox/profiles/%.json matchbox/groups/%.json \
+            matchbox/ignition/%.json ssh-host-keys/% tinc-keys/%.priv
 	#
 
 .PHONY: matchbox
