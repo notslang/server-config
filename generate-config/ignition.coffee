@@ -6,7 +6,7 @@ packageInfo = require '../package'
 {HOSTNAME_TO_IP, HOSTNAME_TO_TINC_IP, hasPublicIp, isVps, getSwapSize} = require './nodes'
 
 {addTinc} = require './tinc'
-{disableUnit, addUnit, addFile, addFilesystem} = require './utils'
+{disableUnit, addUnit, addFile, addFilesystem, normalizeConfig} = require './utils'
 
 MASTER_HOSTNAME = 'coreos0'
 MASTER_IP = HOSTNAME_TO_IP[MASTER_HOSTNAME]
@@ -257,5 +257,7 @@ for type in ['dsa', 'ecdsa', 'ed25519', 'rsa']
     owner: 'root:root'
     contents: fs.readFileSync("./ssh-host-keys/#{argv.hostname}/ssh_host_#{type}_key.pub", 'utf8')
   )
+
+normalizeConfig(ignitionConfig)
 
 process.stdout.write JSON.stringify(ignitionConfig, null, 2)

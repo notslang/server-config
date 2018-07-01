@@ -1,3 +1,5 @@
+_ = require 'lodash'
+
 disableUnit = (config, unitName) ->
   config.systemd.units.push(name: unitName, mask: true)
 
@@ -63,4 +65,10 @@ addFilesystem = (config, name, format, wipeFilesystem) ->
     """
   )
 
-module.exports = {disableUnit, addUnit, addFile, addFilesystem}
+normalizeConfig = (config) =>
+  config.storage.files = _.sortBy(config.storage.files , ['filesystem', 'path'])
+  config.storage.filesystems = _.sortBy(config.storage.filesystems , ['name'])
+  config.systemd.units = _.sortBy(config.systemd.units , ['name'])
+  config.networkd.units = _.sortBy(config.networkd.units , ['name'])
+
+module.exports = {disableUnit, addUnit, addFile, addFilesystem, normalizeConfig}
