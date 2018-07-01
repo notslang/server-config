@@ -1,0 +1,20 @@
+{
+  "name": "coreos",
+  "description": "A collection of config files for my homelab.",
+  "version": "1.0.0",
+  "author": "Sean Lang <slang800@gmail.com>",
+  "bugs": {
+    "url": "https://github.com/slang800/coreos-k8s-config/issues"
+  },
+  "homepage": "https://github.com/slang800/coreos-k8s-config#readme",
+  "license": "GPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/slang800/coreos-k8s-config.git"
+  },
+  "dependencies": {
+    "argparse": "^1.0.10",
+    "coffeescript": "^2.3.1",
+    "lodash": "^4.17.10"
+  }
+}

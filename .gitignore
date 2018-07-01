@@ -8,3 +8,4 @@
 /matchbox/groups/*.json
 /matchbox/ignition/*.json
 /matchbox/profiles/*.json
+/backups/
