@@ -239,24 +239,33 @@ addFile(
   contents: fs.readFileSync('./config/sshd_config', 'utf8')
 )
 
-# manually set the host keys to prevent the SSH fingerprint from changing
-# between reboots. we could store this stuff in /data, but if there's an issue
-# with mounting /data, then I still want to be able to SSH into the system.
-for type in ['dsa', 'ecdsa', 'ed25519', 'rsa']
-  addFile(
-    ignitionConfig
-    path: "/etc/ssh/ssh_host_#{type}_key"
-    mode: 600
-    owner: 'root:root'
-    contents: fs.readFileSync("./ssh-host-keys/#{argv.hostname}/ssh_host_#{type}_key", 'utf8')
-  )
-  addFile(
-    ignitionConfig
-    path: "/etc/ssh/ssh_host_#{type}_key.pub"
-    mode: 644
-    owner: 'root:root'
-    contents: fs.readFileSync("./ssh-host-keys/#{argv.hostname}/ssh_host_#{type}_key.pub", 'utf8')
-  )
+if not isVps(argv.hostname)
+  # manually set the host keys to prevent the SSH fingerprint from changing
+  # between reboots. we could store this stuff in /data, but if there's an issue
+  # with mounting /data, then I still want to be able to SSH into the system.
+  for type in ['dsa', 'ecdsa', 'ed25519', 'rsa']
+    privateKey = fs.readFileSync(
+      "./ssh-host-keys/#{argv.hostname}/ssh_host_#{type}_key"
+      'utf8'
+    )
+    addFile(
+      ignitionConfig
+      path: "/etc/ssh/ssh_host_#{type}_key"
+      mode: 600
+      owner: 'root:root'
+      contents: privateKey
+    )
+    publicKey = fs.readFileSync(
+      "./ssh-host-keys/#{argv.hostname}/ssh_host_#{type}_key.pub"
+      'utf8'
+    )
+    addFile(
+      ignitionConfig
+      path: "/etc/ssh/ssh_host_#{type}_key.pub"
+      mode: 644
+      owner: 'root:root'
+      contents: publicKey
+    )
 
 normalizeConfig(ignitionConfig)
 
