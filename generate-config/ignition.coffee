@@ -169,6 +169,7 @@ ignitionConfig =
     ]
   storage:
     files: []
+    filesystems: []
   systemd:
     units: [
       {
@@ -176,6 +177,8 @@ ignitionConfig =
         enable: true
       }
     ]
+  networkd:
+    units: []
 
 # disable ntpd because we use timesyncd
 disableUnit(ignitionConfig, 'ntpd.service')
