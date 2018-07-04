@@ -1,5 +1,16 @@
 _ = require 'lodash'
 
+# remove the mount path from the filename and set the filesystem name
+extractFilesystemFromPath = (filesystems, path) ->
+  for {name} in filesystems
+    if path.startsWith('/' + name)
+      return {
+        filesystem: name
+        path: path.replace('/' + name, '') # only does one replacement
+      }
+
+  return {filesystem: 'root', path} # no match
+
 disableUnit = (config, unitName) ->
   config.systemd.units.push(name: unitName, mask: true)
 
@@ -11,20 +22,9 @@ addUnit = (config, {name, enable, contents, dropins}) ->
   config.systemd.units.push(unit)
 
 addFile = (config, {path, mode, owner, contents}) ->
-  filesystem = 'root'
-  for fsConfig in config.storage.filesystems
-    # remove the mount path from the filename and set the filesystem name
-    {name} = fsConfig
-    if path.startsWith('/' + name)
-      filesystem = name
-      path = path.replace('/' + name, '') # only does one replacement
-      break
-
-  file = {
-    filesystem
-    path
-    contents:
-      source: "data:,#{encodeURIComponent(contents)}"
+  file = extractFilesystemFromPath(config.storage.filesystems, path)
+  file.contents = {
+    source: "data:,#{encodeURIComponent(contents)}"
   }
   [user, group] = owner.split(':')
   user = if user is 'core' then 500 else 0
@@ -33,7 +33,6 @@ addFile = (config, {path, mode, owner, contents}) ->
   if group then file.group = {id: group}
   if mode then file.mode = parseInt('' + mode, 8)
   config.storage.files.push(file)
-
 
 addFilesystem = (config, name, format, wipeFilesystem) ->
   # we setup btrfs volumes with the btrfs filesystem label tool, but the ext4
