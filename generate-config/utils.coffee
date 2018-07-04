@@ -24,7 +24,7 @@ addFile = (config, {path, mode, owner, contents}) ->
     filesystem
     path
     contents:
-      inline: contents
+      source: "data:,#{encodeURIComponent(contents)}"
   }
   [user, group] = owner.split(':')
   user = if user is 'core' then 500 else 0
