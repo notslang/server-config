@@ -16,7 +16,7 @@ disableUnit = (config, unitName) ->
 
 addUnit = (config, {name, enable, contents, dropins}) ->
   unit = {name}
-  if enable then unit.enable = true
+  if enable then unit.enabled = true
   if contents then unit.contents = contents + '\n'
   if dropins then unit.dropins = dropins
   config.systemd.units.push(unit)
