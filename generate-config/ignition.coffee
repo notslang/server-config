@@ -6,7 +6,14 @@ packageInfo = require '../package'
 {HOSTNAME_TO_IP, HOSTNAME_TO_TINC_IP, hasPublicIp, isVps, getSwapSize} = require './nodes'
 
 {addTinc} = require './tinc'
-{disableUnit, addUnit, addFile, addFilesystem, normalizeConfig} = require './utils'
+{
+  addDirectory
+  addFile
+  addFilesystem
+  addUnit
+  disableUnit
+  normalizeConfig
+} = require './utils'
 
 MASTER_HOSTNAME = 'coreos0'
 MASTER_IP = HOSTNAME_TO_IP[MASTER_HOSTNAME]
@@ -215,6 +222,20 @@ if not isVps(argv.hostname)
       }
     ]
   )
+
+addDirectory(
+  ignitionConfig
+  path: '/data'
+  mode: 755
+  owner: 'core:core'
+)
+
+addDirectory(
+  ignitionConfig
+  path: '/ephemeral'
+  mode: 755
+  owner: 'core:core'
+)
 
 addTinc(ignitionConfig, argv.hostname)
 addSshConfig(ignitionConfig, argv.hostname)
