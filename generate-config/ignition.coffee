@@ -168,6 +168,7 @@ ignitionConfig =
       }
     ]
   storage:
+    directories: []
     files: []
     filesystems: []
   systemd:

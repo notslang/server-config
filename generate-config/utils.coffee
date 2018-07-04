@@ -21,6 +21,16 @@ addUnit = (config, {name, enable, contents, dropins}) ->
   if dropins then unit.dropins = dropins
   config.systemd.units.push(unit)
 
+addDirectory = (config, {path, mode, owner}) ->
+  directory = extractFilesystemFromPath(config.storage.filesystems, path)
+  [user, group] = owner.split(':')
+  user = if user is 'core' then 500 else 0
+  group = if group is 'core' then 500 else 0
+  if user then directory.user = {id: user}
+  if group then directory.group = {id: group}
+  if mode then directory.mode = parseInt('' + mode, 8)
+  config.storage.directories.push(directory)
+
 addFile = (config, {path, mode, owner, contents}) ->
   file = extractFilesystemFromPath(config.storage.filesystems, path)
   file.contents = {
@@ -70,4 +80,11 @@ normalizeConfig = (config) =>
   config.systemd.units = _.sortBy(config.systemd.units , ['name'])
   config.networkd.units = _.sortBy(config.networkd.units , ['name'])
 
-module.exports = {disableUnit, addUnit, addFile, addFilesystem, normalizeConfig}
+module.exports = {
+  addDirectory,
+  addFile,
+  addFilesystem,
+  addUnit,
+  disableUnit,
+  normalizeConfig
+}
