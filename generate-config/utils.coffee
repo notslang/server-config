@@ -24,11 +24,9 @@ addUnit = (config, {name, enable, contents, dropins}) ->
 addDirectory = (config, {path, mode, owner}) ->
   directory = extractFilesystemFromPath(config.storage.filesystems, path)
   [user, group] = owner.split(':')
-  user = if user is 'core' then 500 else 0
-  group = if group is 'core' then 500 else 0
-  if user then directory.user = {id: user}
-  if group then directory.group = {id: group}
-  if mode then directory.mode = parseInt('' + mode, 8)
+  directory.user = {id: if user is 'core' then 500 else 0}
+  directory.group = {id: if group is 'core' then 500 else 0}
+  directory.mode = parseInt('' + mode, 8)
   config.storage.directories.push(directory)
 
 addFile = (config, {path, mode, owner, contents}) ->
@@ -37,11 +35,9 @@ addFile = (config, {path, mode, owner, contents}) ->
     source: "data:,#{encodeURIComponent(contents)}"
   }
   [user, group] = owner.split(':')
-  user = if user is 'core' then 500 else 0
-  group = if group is 'core' then 500 else 0
-  if user then file.user = {id: user}
-  if group then file.group = {id: group}
-  if mode then file.mode = parseInt('' + mode, 8)
+  file.user = {id: if user is 'core' then 500 else 0}
+  file.group = {id: if group is 'core' then 500 else 0}
+  file.mode = parseInt('' + mode, 8)
   config.storage.files.push(file)
 
 addFilesystem = (config, name, format, wipeFilesystem) ->
