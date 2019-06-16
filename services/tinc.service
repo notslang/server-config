@@ -1,0 +1,13 @@
+[Unit]
+Description=Tinc VPN
+Requires=docker.service
+
+[Service]
+ExecStartPre=/bin/docker pull ndru/tinc:latest
+ExecStart=/bin/docker run --restart=always --name tinc --net=host --device=/dev/net/tun --cap-add NET_ADMIN --volume /data/tinc:/etc/tinc ndru/tinc start -D
+ExecStop=/bin/docker stop tinc
+ExecStopPost=/bin/docker rm -f tinc
+ExecReload=/bin/docker restart tinc
+
+[Install]
+WantedBy=multi-user.target
