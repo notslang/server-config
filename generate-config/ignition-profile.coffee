@@ -47,7 +47,7 @@ getCoreOsVersion = ->
       throw new Error("versionA #{versionA} is the same as versionB #{versionB}")
   )
 
-MATCHBOX_SERVER = 'http://192.168.1.226:8080'
+MATCHBOX_SERVER = 'http://192.168.1.70:8080'
 COREOS_VERSION = getCoreOsVersion()
 
 process.stdout.write JSON.stringify({
