@@ -10,3 +10,13 @@
         owner: root
         group: root
         mode: 0600
+
+- name: Fix System Time
+  hosts: all
+  become: true
+  tasks:
+    - name: enable timesyncd
+      systemd:
+        name: systemd-timesyncd
+        enabled: yes
+        state: started
