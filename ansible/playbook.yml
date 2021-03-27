@@ -20,3 +20,22 @@
         name: systemd-timesyncd
         enabled: yes
         state: started
+
+- name: Setup Shell
+  hosts: all
+  become: true
+  tasks:
+    - name: make /data writable by main user so saving bash history works
+      file:
+        path: /data
+        owner: slang
+        group: users
+        mode: 0755
+        state: directory
+    - name: add .bashrc
+      copy:
+        src: ../shell/.bashrc
+        dest: /home/slang/.bashrc
+        owner: slang
+        group: users
+        mode: 0644
