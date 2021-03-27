@@ -1,0 +1,17 @@
+# Use most defaults for sshd configuration.
+Subsystem sftp /usr/lib/ssh/sftp-server
+ClientAliveInterval 180
+UseDNS no
+UsePAM yes
+PrintLastLog no # handled by PAM
+PrintMotd no # handled by PAM
+
+PermitRootLogin no
+AllowUsers slang
+PubkeyAuthentication yes
+PasswordAuthentication no
+ChallengeResponseAuthentication no
+
+# The default is to check both .ssh/authorized_keys and .ssh/authorized_keys2
+# but this is overridden so installations will only check .ssh/authorized_keys
+AuthorizedKeysFile .ssh/authorized_keys
