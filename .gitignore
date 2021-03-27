@@ -1,11 +1,2 @@
-/cloud-config/
-/k8s-keys/
-/node_modules/
-/ssh-host-keys/
 /tinc-keys/
 /ssh-keys/
-/matchbox/assets/coreos/
-/matchbox/groups/*.json
-/matchbox/ignition/*.json
-/matchbox/profiles/*.json
-/backups/
