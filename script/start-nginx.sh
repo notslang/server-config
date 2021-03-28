@@ -8,4 +8,5 @@ docker run -d --name nginx \
        -p 443:443 \
        -p 6984:6984 \
        -p 5984:5984 \
+       --restart=always \
        nginx:1.19.8-alpine
