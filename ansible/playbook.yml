@@ -39,3 +39,31 @@
         owner: slang
         group: users
         mode: 0644
+
+- name: Nginx
+  hosts: all
+  become: true
+  tasks:
+    - name: ensure nginx content directory is present
+      file:
+        path: /data/nginx/content
+        owner: slang
+        group: users
+        mode: 0755
+        state: directory
+    - name: ensure nginx config directory is present
+      file:
+        path: /data/nginx/config
+        owner: slang
+        group: users
+        mode: 0755
+        state: directory
+    - name: site config files
+      copy:
+        src: "{{ item }}"
+        dest: /data/nginx/config/
+        owner: slang
+        group: users
+        mode: 0644
+      with_fileglob:
+        - "../nginx/config/*.conf"
