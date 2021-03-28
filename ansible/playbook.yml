@@ -58,6 +58,13 @@
         group: users
         mode: 0755
         state: directory
+    - name: add main nginx config file
+      copy:
+        src: ../nginx/nginx.conf
+        dest: /data/nginx/nginx.conf
+        owner: slang
+        group: users
+        mode: 0644
     - name: site config files
       copy:
         src: "{{ item }}"
