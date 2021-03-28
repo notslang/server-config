@@ -3,7 +3,7 @@
   hosts: all
   become: true
   tasks:
-    - name: Add sshd_config
+    - name: add sshd_config
       copy:
         src: ../ssh/sshd_config
         dest: /etc/ssh/sshd_config
